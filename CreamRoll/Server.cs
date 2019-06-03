@@ -57,13 +57,9 @@ namespace CreamRoll {
             });
         }
 
-        protected virtual void ProcessRequest(HttpListenerContext ctx) {
+        protected abstract void ProcessRequest(HttpListenerContext ctx);
 
-        }
-
-        protected virtual async Task ProcessRequestAsync(HttpListenerContext ctx) {
-
-        }
+        protected abstract Task ProcessRequestAsync(HttpListenerContext ctx);
 
         public void Stop() {
             listener.Close();
