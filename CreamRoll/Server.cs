@@ -42,7 +42,7 @@ namespace CreamRoll {
             Task.Run(() => {
                 while (listener.IsListening) {
                     sem.WaitOne();
-                    listener.GetContextAsync().ContinueWith(async (t) => {
+                    listener.GetContextAsync().ContinueWith(async t => {
                         try {
                             sem.Release();
 
