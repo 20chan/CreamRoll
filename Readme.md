@@ -1,5 +1,8 @@
 # CreamRoll
 
+[![Build](https://img.shields.io/appveyor/ci/phillyai/CreamRoll/master.svg)](https://ci.appveyor.com/project/phillyai/CreamRoll)
+[![Nuget](https://img.shields.io/nuget/dt/CreamRoll.svg)](https://www.nuget.org/packages/CreamRoll/)
+
 > WIP
 
 CreamRoll is lightweight, easy framework for building HTTP based sync/async service on .NET Standard.
