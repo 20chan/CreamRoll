@@ -11,33 +11,21 @@ Inspired from [aardwolf](https://github.com/JamesDunne/aardwolf) and [Nancy](htt
 
 ## Example
 
-Currently route interface looks like:
-
-```csharp
-class MainServer : RouteServer {
-	public MainServer() {
-		Get("/", async ctx => {
-			ctx.Response.ContentType = "text/html";
-			var writer = new StreamWriter(ctx.Response.OutputStream);
-			await writer.WriteLineAsync("<h1>Hello, World!");
-			await writer.FlushAsync();
-			writer.Close();
-			return true;
-		}
-	}
-}
-```
-
-Soon, it will be:
+So easy even a cat can do it
 
 ```csharp
 [Get("/")]
-public string Root() {
+public string Hello() {
 	return "<marquee>Hello, World!";
+}
+
+[Get("/async")]
+public Task<string> HelloAsync() {
+	return Task.FromResult("<marquee>Hello, World!");
 }
 ```
 
-And also supports parameterized path DSL using dynamic:
+And also supports parameterized path DSL using dynamic (WIP):
 
 ```csharp
 [Get("/api/user/{name}?{detail?:bool}", ContentType = Json)]
