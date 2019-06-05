@@ -7,6 +7,8 @@
 
 > WIP
 
+![logo](logo.png)
+
 CreamRoll is lightweight, easy framework for building HTTP based sync/async service on .NET Standard.
 
 Inspired from [aardwolf](https://github.com/JamesDunne/aardwolf) and [Nancy](http://nancyfx.org/).
