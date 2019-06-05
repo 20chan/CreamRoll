@@ -3,7 +3,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using CreamRoll.Exceptions;
-using CreamRoll.Helper;
+using CreamRoll.Helpers;
 
 namespace CreamRoll {
     public abstract partial class RouteServer : RouteServerBase {
