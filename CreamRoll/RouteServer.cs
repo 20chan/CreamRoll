@@ -1,9 +1,11 @@
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using CreamRoll.Exceptions;
 using CreamRoll.Helpers;
+using CreamRoll.Queries;
 
 namespace CreamRoll {
     public abstract partial class RouteServer : RouteServerBase {
@@ -94,9 +96,9 @@ namespace CreamRoll {
             return true;
         }
 
-        protected override bool IsRoutePathMatch(string path, HttpListenerRequest request, out RouteContext ctx) {
-
-            return base.IsRoutePathMatch(path, request, out ctx);
+        protected override bool IsRoutePathMatch(Route route, HttpListenerRequest request, ref ParameterQuery query) {
+            var path = string.Join("/", request.Url.Segments.Select(s => s.Replace("/", "")));
+            return route.Path.TryMatch(path, ref query);
         }
     }
 }

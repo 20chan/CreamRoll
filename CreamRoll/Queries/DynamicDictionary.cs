@@ -17,5 +17,10 @@ namespace CreamRoll.Queries {
             dict[binder.Name] = value;
             return true;
         }
+
+        public dynamic this[string key] {
+            get => dict[key];
+            set => dict[key] = value;
+        }
     }
 }

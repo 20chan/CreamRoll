@@ -51,12 +51,16 @@ namespace CreamRoll {
             var request = ctx.Request;
             var response = ctx.Response;
             var user = ctx.User;
+            var query = new ParameterQuery();
+            var routeContext = new RouteContext {
+                Request = request,
+                Response = response,
+                User = user,
+                Query = query,
+            };
 
             foreach (var route in routes) {
-                if (IsRouteMatch(route, request, out var routeContext)) {
-                    routeContext.Request = request;
-                    routeContext.Response = response;
-                    routeContext.User = user;
+                if (IsRouteMatch(route, request, ref query)) {
                     if (route.Action(routeContext).Result) {
                         return;
                     }
@@ -68,12 +72,16 @@ namespace CreamRoll {
             var request = ctx.Request;
             var response = ctx.Response;
             var user = ctx.User;
+            var query = new ParameterQuery();
+            var routeContext = new RouteContext {
+                Request = request,
+                Response = response,
+                User = user,
+                Query = query,
+            };
 
             foreach (var route in routes) {
-                if (IsRouteMatch(route, request, out var routeContext)) {
-                    routeContext.Request = request;
-                    routeContext.Response = response;
-                    routeContext.User = user;
+                if (IsRouteMatch(route, request, ref query)) {
                     if (await route.Action(routeContext)) {
                         return;
                     }
@@ -81,34 +89,29 @@ namespace CreamRoll {
             }
         }
 
-        private bool IsRouteMatch(Route route, HttpListenerRequest request, out RouteContext ctx) {
+        private bool IsRouteMatch(Route route, HttpListenerRequest request, ref ParameterQuery query) {
             if (route.Method != request.HttpMethod) {
-                ctx = null;
                 return false;
             }
 
-            return IsRoutePathMatch(route.Path, request, out ctx);
+            return IsRoutePathMatch(route, request, ref query);
         }
 
-        protected virtual bool IsRoutePathMatch(string path, HttpListenerRequest request, out RouteContext ctx) {
-            var segments = "/" + string.Join("", request.Url.Segments.Select(s => s.Replace("/", "")));
-            if (path == segments) {
-                ctx = new RouteContext();
-                return true;
-            }
-
-            ctx = null;
-            return false;
+        protected virtual bool IsRoutePathMatch(Route route, HttpListenerRequest request, ref ParameterQuery query) {
+            var segments = "/" + string.Join("/", request.Url.Segments.Select(s => s.Replace("/", "")));
+            return route.RawPath == segments;
         }
 
         protected class Route {
             public string Method;
-            public string Path;
+            public string RawPath;
+            public ParameterizedPath Path;
             public AsyncRouteDel Action;
 
             public Route(string method, string path, AsyncRouteDel action) {
                 Method = method;
-                Path = path;
+                RawPath = path;
+                Path = new ParameterizedPath(path);
                 Action = action;
             }
         }
@@ -116,7 +119,7 @@ namespace CreamRoll {
         public class RouteContext {
             public HttpListenerRequest Request;
             public HttpListenerResponse Response;
-            public ParameterQuery Parameters;
+            public dynamic Query;
             public IPrincipal User;
         }
     }
