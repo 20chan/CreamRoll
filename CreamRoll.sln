@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreamRoll", "CreamRoll\CreamRoll.csproj", "{8AD1AA9F-C244-4090-A4A0-8CEEB2F6CACD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreamRoll.Tests", "CreamRoll.Tests\CreamRoll.Tests.csproj", "{4EC94F71-3B44-437D-BD5C-E867B21E5C73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{8AD1AA9F-C244-4090-A4A0-8CEEB2F6CACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AD1AA9F-C244-4090-A4A0-8CEEB2F6CACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AD1AA9F-C244-4090-A4A0-8CEEB2F6CACD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EC94F71-3B44-437D-BD5C-E867B21E5C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC94F71-3B44-437D-BD5C-E867B21E5C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC94F71-3B44-437D-BD5C-E867B21E5C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC94F71-3B44-437D-BD5C-E867B21E5C73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

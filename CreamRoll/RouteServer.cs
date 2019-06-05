@@ -93,5 +93,10 @@ namespace CreamRoll {
             writer.Close();
             return true;
         }
+
+        protected override bool IsRoutePathMatch(string path, HttpListenerRequest request, out RouteContext ctx) {
+
+            return base.IsRoutePathMatch(path, request, out ctx);
+        }
     }
 }

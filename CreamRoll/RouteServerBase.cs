@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using CreamRoll.Queries;
 
 namespace CreamRoll {
     public abstract class RouteServerBase : Server {
@@ -115,6 +116,7 @@ namespace CreamRoll {
         public class RouteContext {
             public HttpListenerRequest Request;
             public HttpListenerResponse Response;
+            public ParameterQuery Parameters;
             public IPrincipal User;
         }
     }
