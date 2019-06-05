@@ -72,7 +72,7 @@ namespace CreamRoll {
                 }
                 if (isParamsCtx) {
                     return ctx => {
-                        var body = method.Invoke<string>(Instance);
+                        var body = method.Invoke<string>(Instance, ctx);
                         return WriteDefaultResponseAsync(ctx.Response, body);
                     };
                 }
