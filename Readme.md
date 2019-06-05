@@ -25,15 +25,13 @@ public Task<string> HelloAsync() {
 }
 ```
 
-And also supports parameterized path DSL using dynamic (WIP):
+And also supports parameterized path DSL:
 
 ```csharp
-[Get("/api/user/{name}?{detail?:bool}", ContentType = Json)]
+[Get("/api/user/{name}/info")]
 public async Task<string> GetUserInfoAsync(RollContext ctx) {
-	var user = await GetUser(ctx.query.name);
-	var result = user.GetInfo(ctx.query.detail ?? false)
-
-	return result.ToString();
+	var user = await GetUser(ctx.Query.name);
+	return user.Info;
 }
 ```
 
