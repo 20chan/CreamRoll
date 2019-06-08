@@ -10,7 +10,7 @@ namespace CreamRoll {
 
         private HttpListener listener;
 
-        public Server(string host = "*", int port = 80) {
+        public Server(string host = "*", int port = 4000) {
             listener = new HttpListener();
             Host = host;
             Port = port;
