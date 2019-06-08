@@ -88,7 +88,10 @@ namespace CreamRoll {
         }
 
         private static async Task<bool> WriteDefaultResponseAsync(HttpListenerResponse response, string body) {
-            response.ContentType = "text/html";
+            if (response.ContentType != null) {
+                response.ContentType = "text/html; charset=utf-8";
+            }
+            response.ContentEncoding = Encoding.UTF8;
             var writer = new StreamWriter(response.OutputStream);
             await writer.WriteAsync(body);
             await writer.FlushAsync();
