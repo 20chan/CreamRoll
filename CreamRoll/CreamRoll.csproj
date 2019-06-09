@@ -3,16 +3,17 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>CreamRoll</PackageId>
-        <Version>1.0.7</Version>
+        <Version>1.0.8</Version>
         <Authors>20chan</Authors>
         <Description>Lightweight, easy framework for building HTTP based sync/async server on .NET Standard</Description>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <RepositoryUrl>https://github.com/phillyai/CreamRoll</RepositoryUrl>
-        <PackageIconUrl>../icon.png</PackageIconUrl>
+        <PackageIconUrl>icon.png</PackageIconUrl>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="../LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />
+        <None Include="../icon.png" Pack="true" PackagePath="icon.png" />
     </ItemGroup>
 
     <ItemGroup>
