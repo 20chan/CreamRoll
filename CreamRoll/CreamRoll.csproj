@@ -8,12 +8,12 @@
         <Description>Lightweight, easy framework for building HTTP based sync/async server on .NET Standard</Description>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <RepositoryUrl>https://github.com/phillyai/CreamRoll</RepositoryUrl>
-        <PackageIconUrl>icon.png</PackageIconUrl>
+        <PackageIconUrl>logo.png</PackageIconUrl>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="../LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />
-        <None Include="../icon.png" Pack="true" PackagePath="icon.png" />
+        <None Include="../logo.png" Pack="true" PackagePath="logo.png" />
     </ItemGroup>
 
     <ItemGroup>
