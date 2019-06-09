@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace CreamRoll {
     public abstract partial class RouteServer {
@@ -6,6 +7,13 @@ namespace CreamRoll {
         public class RouteAttribute : Attribute {
             public string Method;
             public string Path;
+
+            public bool ManuallyResponse;
+
+            public string ContentType;
+            public Encoding ContentEncoding;
+            public bool IsRedirect;
+            public string RedirectLocation;
 
             public RouteAttribute(string method, string path) {
                 Method = method;

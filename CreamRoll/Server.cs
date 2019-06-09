@@ -8,9 +8,11 @@ namespace CreamRoll {
         public readonly string Host;
         public readonly int Port;
 
+        public bool HandleErrorToConsole = true;
+
         private HttpListener listener;
 
-        public Server(string host = "*", int port = 4000) {
+        public Server(string host, int port) {
             listener = new HttpListener();
             Host = host;
             Port = port;
@@ -50,6 +52,9 @@ namespace CreamRoll {
                             await ProcessRequestAsync(ctx);
                         }
                         catch (Exception ex) {
+                            if (!HandleErrorToConsole) {
+                                throw;
+                            }
                             await Console.Error.WriteAsync(ex.ToString());
                         }
                     });

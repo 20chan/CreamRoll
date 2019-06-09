@@ -11,7 +11,7 @@ namespace CreamRoll {
 
         protected List<Route> routes;
 
-        public RouteServerBase() {
+        public RouteServerBase(string host, int port) : base(host, port) {
             routes = new List<Route>();
         }
 
