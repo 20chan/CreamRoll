@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,63 +33,77 @@ namespace CreamRoll {
 
         private AsyncRouteDel CreateRouteDelFromMethod(RouteAttribute route, MethodInfo method) {
             var returnType = method.ReturnType;
-            var parameters = method.GetParameters();
-            var isParamsEmpty = parameters.Length == 0;
-            var isParamsCtx = parameters.Length == 1 && parameters[0].ParameterType == typeof(RouteContext);
+            var isReturnNonGenericTask = returnType == typeof(Task);
+            var isReturnGenericTask = returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>);
+            var isAsync = isReturnNonGenericTask || isReturnGenericTask;
+            var parameterInfos = method.GetParameters();
+            var isParamsEmpty = parameterInfos.Length == 0;
+            var isParamsCtx = parameterInfos.Length == 1 && parameterInfos[0].ParameterType == typeof(RouteContext);
 
-            if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>)) {
+            if (isAsync) {
                 if (route.ManuallyResponse) {
-                    if (returnType.GetGenericArguments().First() == typeof(bool)) {
-                        if (isParamsEmpty) {
-                            return _ => method.Invoke<Task<bool>>(Instance);
-                        }
-                        if (isParamsCtx) {
-                            return ctx => method.Invoke<Task<bool>>(Instance, ctx);
+                    if (isReturnNonGenericTask) {
+                        return ctx => method.Invoke<Task>(Instance, getParams(ctx))
+                            .ContinueWith(_ => true);
+                    }
+
+                    if (isReturnGenericTask) {
+                        if (returnType.GetGenericArguments().First() == typeof(bool)) {
+                            return ctx => method.Invoke<Task<bool>>(Instance, getParams(ctx));
                         }
                     }
+
+                    throw new RouteMethodTypeMismatchException("Return type of async ManuallyResponse method must be Task<bool> or Task");
                 }
-                else {
-                    if (isParamsEmpty) {
-                        return async ctx => {
-                            object body = await method.Invoke<dynamic>(Instance);
-                            return await WriteDefaultResponseAsync(route, ctx.Response, body);
-                        };
-                    }
-                    if (isParamsCtx) {
-                        return async ctx => {
-                            object body = await method.Invoke<dynamic>(Instance, ctx);
-                            return await WriteDefaultResponseAsync(route, ctx.Response, body);
-                        };
-                    }
+                if (isReturnNonGenericTask) {
+                    // Not-ManuallyResponse route method should not return nothing... but...
+                    return async ctx => {
+                        await method.Invoke<Task>(Instance, getParams(ctx));
+                        return await WriteDefaultResponseAsync(route, ctx.Response, "");
+                    };
+                }
+                if (isReturnGenericTask) {
+                    return async ctx => {
+                        object body = await method.Invoke<dynamic>(Instance, getParams(ctx));
+                        return await WriteDefaultResponseAsync(route, ctx.Response, body);
+                    };
                 }
             }
 
             if (route.ManuallyResponse) {
-                if (returnType == typeof(bool)) {
-                    if (isParamsEmpty) {
-                        return _ => Task.FromResult(method.Invoke<bool>(Instance));
-                    }
-                    if (isParamsCtx) {
-                        return ctx => Task.FromResult(method.Invoke<bool>(Instance, ctx));
-                    }
+                if (returnType == typeof(void)) {
+                    return ctx => Task.FromResult(method.InvokeAndTrue(Instance, getParams(ctx)));
                 }
+                if (returnType == typeof(bool)) {
+                    return ctx => Task.FromResult(method.Invoke<bool>(Instance, getParams(ctx)));
+                }
+
+                throw new RouteMethodTypeMismatchException("Return type of ManuallyResponse method must be bool or void");
             }
 
-            // type is object
-            if (isParamsEmpty) {
+            if (returnType == typeof(void)) {
                 return ctx => {
-                    var body = method.Invoke<object>(Instance);
-                    return WriteDefaultResponseAsync(route, ctx.Response, body);
-                };
-            }
-            if (isParamsCtx) {
-                return ctx => {
-                    var body = method.Invoke<object>(Instance, ctx);
-                    return WriteDefaultResponseAsync(route, ctx.Response, body);
+                    method.InvokeAndTrue(Instance, getParams(ctx));
+                    return WriteDefaultResponseAsync(route, ctx.Response, "");
                 };
             }
 
-            throw new RouteMethodTypeMismatchException();
+            return ctx => {
+                var body = method.Invoke<object>(Instance, getParams(ctx));
+                return WriteDefaultResponseAsync(route, ctx.Response, body);
+            };
+
+
+            object[] getParams(RouteContext ctx) {
+                if (isParamsEmpty) {
+                    return new object[0];
+                }
+                if (isParamsCtx) {
+                    return new object[] { ctx };
+                }
+
+                throw new RouteMethodTypeMismatchException("Parameters of route method must be () or (RouteContext)");
+            }
         }
 
         private async Task<bool> WriteDefaultResponseAsync(RouteAttribute route, HttpListenerResponse response, object body) {
