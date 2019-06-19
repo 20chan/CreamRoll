@@ -66,6 +66,8 @@ namespace CreamRoll {
                     }
                 }
             }
+
+            HandleMissingRoute(routeContext);
         }
 
         protected override async Task ProcessRequestAsync(HttpListenerContext ctx) {
@@ -87,6 +89,8 @@ namespace CreamRoll {
                     }
                 }
             }
+
+            await HandleMissingRouteAsync(routeContext);
         }
 
         private bool IsRouteMatch(Route route, HttpListenerRequest request, ref ParameterQuery query) {
@@ -100,6 +104,17 @@ namespace CreamRoll {
         protected virtual bool IsRoutePathMatch(Route route, HttpListenerRequest request, ref ParameterQuery query) {
             var segments = "/" + string.Join("/", request.Url.Segments.Select(s => s.Replace("/", "")));
             return route.RawPath == segments;
+        }
+
+        protected virtual void HandleMissingRoute(RouteContext ctx) {
+            ctx.Response.StatusCode = 404;
+            ctx.Response.OutputStream.Close();
+        }
+
+        protected virtual Task HandleMissingRouteAsync(RouteContext ctx) {
+            ctx.Response.StatusCode = 404;
+            ctx.Response.OutputStream.Close();
+            return Task.CompletedTask;
         }
 
         protected class Route {
