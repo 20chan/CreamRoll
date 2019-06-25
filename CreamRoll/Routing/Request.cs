@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
+using CreamRoll.Queries;
 using static CreamRoll.Routing.Constants;
 
 namespace CreamRoll.Routing {
     public class Request<T> {
         public RequestHead Head;
+        public ParameterQuery Query;
         public T Body;
 
         public Request(Uri uri, T body) {
@@ -18,7 +21,7 @@ namespace CreamRoll.Routing {
         public Uri Uri;
         public HttpVersion Version = DefaultVersion;
         public HeaderMap Headers = new HeaderMap();
-        public Extensions Extensions = new Extensions();
+        public IPrincipal User;
 
         public RequestHead(Uri uri) {
             Uri = uri;

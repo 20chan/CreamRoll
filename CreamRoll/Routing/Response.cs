@@ -16,7 +16,6 @@ namespace CreamRoll.Routing {
         public StatusCode Status = DefaultStatus;
         public HttpVersion Version = DefaultVersion;
         public HeaderMap Headers = new HeaderMap();
-        public Extensions Extensions = new Extensions();
 
         public ResponseHead() {
 
