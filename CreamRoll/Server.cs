@@ -12,10 +12,11 @@ namespace CreamRoll {
 
         private HttpListener listener;
 
-        public Server(string host, int port) {
+        public Server(string host, int port, AuthenticationSchemes authScheme) {
             listener = new HttpListener();
             Host = host;
             Port = port;
+            listener.AuthenticationSchemes = authScheme;
 
             listener.Prefixes.Add($"http://{host}:{Port}/");
         }

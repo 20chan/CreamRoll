@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using CreamRoll;
 using Xunit;
-using static CreamRoll.RouteServer;
 
 namespace CreamRoll.Tests {
     public class RouteServerTest : IDisposable {
         int port = 4041;
         TestServer server;
-        RouteServer runner;
+        RouteServer<TestServer> runner;
         public RouteServerTest() {
             server = new TestServer();
             runner = new RouteServer<TestServer>(server, port: port);
