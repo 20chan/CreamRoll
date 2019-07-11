@@ -1,30 +1,22 @@
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Security.Principal;
 using CreamRoll.Queries;
 using static CreamRoll.Routing.Constants;
 
 namespace CreamRoll.Routing {
-    public class Request<T> {
-        public RequestHead Head;
-        public ParameterQuery Query;
-        public T Body;
-
-        public Request(Uri uri, T body) {
-            Head = new RequestHead(uri);
-            Body = body;
-        }
-    }
-
-    public class RequestHead {
+    public class Request {
         public HttpMethod Method = DefaultMethod;
         public Uri Uri;
         public HttpVersion Version = DefaultVersion;
         public HeaderMap Headers = new HeaderMap();
         public IPrincipal User;
 
-        public RequestHead(Uri uri) {
-            Uri = uri;
+        public ParameterQuery Query;
+        public Stream Body;
+
+        public Request(Stream body) {
+            Body = body;
         }
     }
 }

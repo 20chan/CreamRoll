@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CreamRoll;
+using CreamRoll.Routing;
 using Xunit;
 
 namespace CreamRoll.Tests {
@@ -38,13 +39,13 @@ namespace CreamRoll.Tests {
 
         class TestServer {
             [Get("/")]
-            public string Root() {
-                return "hello world!";
+            public Response Root(Request req) {
+                return new Response("hello world!");
             }
 
             [Get("/async")]
-            public Task<string> Async() {
-                return Task.FromResult("hello world!");
+            public Task<Response> Async(Request req) {
+                return Task.FromResult(new Response("hello world!"));
             }
         }
     }
