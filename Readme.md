@@ -1,7 +1,7 @@
 # CreamRoll
 
-[![Build](https://img.shields.io/appveyor/ci/phillyai/CreamRoll/master.svg)](https://ci.appveyor.com/project/phillyai/CreamRoll)
-[![Test](https://img.shields.io/appveyor/tests/phillyai/CreamRoll/master.svg)](https://ci.appveyor.com/project/phillyai/CreamRoll)
+[![Build](https://img.shields.io/appveyor/ci/20chan/CreamRoll/master.svg)](https://ci.appveyor.com/project/20chan/CreamRoll)
+[![Test](https://img.shields.io/appveyor/tests/20chan/CreamRoll/master.svg)](https://ci.appveyor.com/project/20chan/CreamRoll)
 [![Version](https://img.shields.io/nuget/v/CreamRoll.svg)](https://www.nuget.org/packages/CreamRoll/)
 [![Nuget](https://img.shields.io/nuget/dt/CreamRoll.svg)](https://www.nuget.org/packages/CreamRoll/)
 
