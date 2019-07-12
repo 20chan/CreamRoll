@@ -133,6 +133,9 @@ namespace CreamRoll.Routing {
             foreach (var key in source.Headers.AllKeys) {
                 res.Headers[key] = source.Headers[key];
             }
+            foreach (Cookie cookie in source.Cookies) {
+                res.Cookies.Add(cookie.Name, new CreamCookie(cookie));
+            }
 
             return res;
         }
@@ -142,6 +145,9 @@ namespace CreamRoll.Routing {
                 dest.Headers[header.Key] = header.Value;
             }
             dest.StatusCode = (int)source.Status;
+            foreach (var cookie in source.Cookies) {
+                dest.Cookies.Add(new Cookie(cookie.Name, cookie.Value));
+            }
 
             source.Contents(dest.OutputStream);
             dest.OutputStream.Close();

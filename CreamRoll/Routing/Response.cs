@@ -9,6 +9,7 @@ namespace CreamRoll.Routing {
         public StatusCode Status = DefaultStatus;
         public HttpVersion Version = DefaultVersion;
         public HeaderMap Headers = new HeaderMap();
+        public List<CreamCookie> Cookies = new List<CreamCookie>();
         public Action<Stream> Contents;
 
         public Response(Action<Stream> contents) {

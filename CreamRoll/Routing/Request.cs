@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Principal;
 using CreamRoll.Queries;
@@ -10,6 +11,7 @@ namespace CreamRoll.Routing {
         public Uri Uri;
         public HttpVersion Version = DefaultVersion;
         public HeaderMap Headers = new HeaderMap();
+        public Dictionary<string, CreamCookie> Cookies = new Dictionary<string, CreamCookie>();
         public IPrincipal User;
 
         public ParameterQuery Query;
