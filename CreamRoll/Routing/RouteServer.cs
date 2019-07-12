@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -15,8 +13,6 @@ namespace CreamRoll.Routing {
         public delegate Task<Response> AsyncRouteDel(Request request);
 
         public T Instance;
-        public string DefaultContentType = "text/plain; charset=utf-8";
-        public Encoding DefaultContentEncoding = Encoding.UTF8;
 
         protected List<Route> routes;
 
@@ -85,26 +81,6 @@ namespace CreamRoll.Routing {
             routes.Add(route);
         }
 
-        protected override void ProcessRequest(HttpListenerContext ctx) {
-            var request = ConvertRequestToRouteRequest(ctx.Request);
-            var query = new ParameterQuery();
-
-            Response response = null;
-
-            foreach (var route in routes) {
-                if (IsRouteMatch(route, request, ref query)) {
-                    response = route.Action(request).Result;
-                    break;
-                }
-            }
-
-            if (response == null) {
-                response = MissingRoute(request);
-            }
-
-            WriteRouteResponseToResponse(response, ctx.Response);
-        }
-
         protected override async Task ProcessRequestAsync(HttpListenerContext ctx) {
             var request = ConvertRequestToRouteRequest(ctx.Request);
             var query = new ParameterQuery();
@@ -113,6 +89,7 @@ namespace CreamRoll.Routing {
 
             foreach (var route in routes) {
                 if (IsRouteMatch(route, request, ref query)) {
+                    request.Query = query;
                     response = await route.Action(request);
                     break;
                 }
@@ -146,14 +123,26 @@ namespace CreamRoll.Routing {
             if (!Enum.TryParse(source.HttpMethod, true, out HttpMethod method)) {
                 throw new Exception("http method parse failed");
             }
-            return new Request(source.InputStream) {
+
+            var res = new Request(source.InputStream) {
                 Uri = source.Url,
                 Method = method,
             };
+            foreach (var key in source.Headers.AllKeys) {
+                res.Headers[key] = source.Headers[key];
+            }
+
+            return res;
         }
 
         private static void WriteRouteResponseToResponse(Response source, HttpListenerResponse dest) {
+            foreach (var header in source.Headers) {
+                dest.Headers[header.Key] = header.Value;
+            }
+            dest.StatusCode = (int)source.Status;
+
             source.Contents(dest.OutputStream);
+            dest.OutputStream.Close();
         }
 
         protected class Route {

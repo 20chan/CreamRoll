@@ -6,8 +6,6 @@ namespace CreamRoll.Routing {
         Delete,
         Head,
         Options,
-        Connect,
         Patch,
-        Trace,
     }
 }

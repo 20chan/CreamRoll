@@ -21,22 +21,6 @@ namespace CreamRoll {
             listener.Prefixes.Add($"http://{host}:{Port}/");
         }
 
-        public void Start() {
-            listener.Start();
-
-            Task.Run(() => {
-                while (listener.IsListening) {
-                    try {
-                        var ctx = listener.GetContext();
-                        ProcessRequest(ctx);
-                    }
-                    catch (Exception ex) {
-                        Console.Error.Write(ex.ToString());
-                    }
-                }
-            });
-        }
-
         public void StartAsync(int accepts = 4) {
             listener.Start();
 
@@ -62,8 +46,6 @@ namespace CreamRoll {
                 }
             });
         }
-
-        protected abstract void ProcessRequest(HttpListenerContext ctx);
 
         protected abstract Task ProcessRequestAsync(HttpListenerContext ctx);
 
