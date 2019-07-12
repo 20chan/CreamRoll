@@ -82,7 +82,7 @@ namespace CreamRoll.Routing {
         }
 
         protected override async Task ProcessRequestAsync(HttpListenerContext ctx) {
-            var request = ConvertRequestToRouteRequest(ctx.Request);
+            var request = ConvertRequestToRouteRequest(ctx);
             var query = new ParameterQuery();
 
             Response response = null;
@@ -119,7 +119,8 @@ namespace CreamRoll.Routing {
             return new Response("missing 404", status: StatusCode.NotFound);
         }
 
-        private static Request ConvertRequestToRouteRequest(HttpListenerRequest source) {
+        private static Request ConvertRequestToRouteRequest(HttpListenerContext ctx) {
+            var source = ctx.Request;
             if (!Enum.TryParse(source.HttpMethod, true, out HttpMethod method)) {
                 throw new Exception("http method parse failed");
             }
@@ -127,6 +128,7 @@ namespace CreamRoll.Routing {
             var res = new Request(source.InputStream) {
                 Uri = source.Url,
                 Method = method,
+                User = ctx.User,
             };
             foreach (var key in source.Headers.AllKeys) {
                 res.Headers[key] = source.Headers[key];
