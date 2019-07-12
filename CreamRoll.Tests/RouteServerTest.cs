@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CreamRoll;
+using CreamRoll.Routing;
 using Xunit;
 
 namespace CreamRoll.Tests {
@@ -33,18 +34,26 @@ namespace CreamRoll.Tests {
             Assert.Equal("hello world!", GET("/async"));
         }
 
+        [Fact]
+        public void Test404() {
+            Assert.Equal(404, GETStatus("/unkonwnpath"));
+        }
+
         string GET(string path)
-            => WebClientHelper.SendClient($"http://localhost:{port}{path}", "GET");
+            => WebClientHelper.Body($"http://localhost:{port}{path}", "GET");
+
+        int GETStatus(string path)
+            => WebClientHelper.StatusCode($"http://localhost:{port}{path}", "GET");
 
         class TestServer {
             [Get("/")]
-            public string Root() {
-                return "hello world!";
+            public Response Root(Request req) {
+                return new Response("hello world!");
             }
 
             [Get("/async")]
-            public Task<string> Async() {
-                return Task.FromResult("hello world!");
+            public Task<Response> Async(Request req) {
+                return Task.FromResult(new Response("hello world!"));
             }
         }
     }

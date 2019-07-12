@@ -6,29 +6,36 @@ using System.Text;
 
 namespace CreamRoll.Tests {
     public static class WebClientHelper {
-        public static string SendClient(string url, string method) {
-            var req = WebRequest.Create(url);
-            req.Timeout = 1000;
-            req.Method = method;
-
-            var response = req.GetResponse();
+        public static string Body(string url, string method, string body = null) {
+            var response = Request(url, method, body);
             var stream = response.GetResponseStream();
             var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
-        public static string SendClient(string url, string method, string body) {
+
+        public static int StatusCode(string url, string method) {
+            return (int)Request(url, method).StatusCode;
+        }
+
+        public static HttpWebResponse Request(string url, string method, string body = null) {
             var req = WebRequest.Create(url);
             req.Method = method;
 
-            var reqStream = req.GetRequestStream();
-            var writer = new StreamWriter(reqStream);
-            writer.Write(body);
-            writer.Close();
+            if (body != null) {
+                var reqStream = req.GetRequestStream();
+                var writer = new StreamWriter(reqStream);
+                writer.Write(body);
+                writer.Close();
+            }
 
-            var response = req.GetResponse();
-            var stream = response.GetResponseStream();
-            var reader = new StreamReader(stream);
-            return reader.ReadToEnd();
+            HttpWebResponse response;
+            try {
+                response = (HttpWebResponse)req.GetResponse();
+            }
+            catch (WebException ex) {
+                response = (HttpWebResponse)ex.Response;
+            }
+            return response;
         }
     }
 }

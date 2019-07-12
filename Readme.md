@@ -9,7 +9,7 @@
 
 ![logo](logo.png)
 
-CreamRoll is lightweight, easy framework for building HTTP based sync/async service on .NET Standard.
+CreamRoll is lightweight, easy framework for building HTTP based async service on .NET Standard.
 
 Inspired from [aardwolf](https://github.com/JamesDunne/aardwolf) and [Nancy](http://nancyfx.org/).
 
@@ -19,13 +19,13 @@ So easy even a cat can do it
 
 ```csharp
 [Get("/")]
-public string Hello() {
-	return "<marquee>Hello, World!";
+public Response Hello(Request req) {
+	return new Response("<marquee>Hello, World!");
 }
 
 [Get("/async")]
-public Task<string> HelloAsync() {
-	return Task.FromResult("<marquee>Hello, World!");
+public Task<Response> HelloAsync(Request req) {
+	return Task.FromResult(new Response("<marquee>Hello, World!"));
 }
 ```
 
@@ -33,9 +33,9 @@ And also supports parameterized path DSL:
 
 ```csharp
 [Get("/api/user/{name}/info")]
-public async Task<string> GetUserInfoAsync(RollContext ctx) {
-	var user = await GetUser(ctx.Query.name);
-	return user.Info;
+public async Task<Response> GetUserInfoAsync(Request req) {
+	var user = await GetUser(req.Query.name);
+	return new Response(user.Info);
 }
 ```
 
