@@ -48,12 +48,12 @@ namespace CreamRoll.Tests {
         class TestServer {
             [Get("/")]
             public Response Root(Request req) {
-                return new Response("hello world!");
+                return new TextResponse("hello world!");
             }
 
             [Get("/async")]
             public Task<Response> Async(Request req) {
-                return Task.FromResult(new Response("hello world!"));
+                return Task.FromResult<Response>(new TextResponse("hello world!"));
             }
         }
     }

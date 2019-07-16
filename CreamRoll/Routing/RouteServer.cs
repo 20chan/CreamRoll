@@ -116,7 +116,7 @@ namespace CreamRoll.Routing {
         }
 
         protected virtual Response MissingRoute(Request req) {
-            return new Response("missing 404", status: StatusCode.NotFound);
+            return new TextResponse("missing 404", status: StatusCode.NotFound);
         }
 
         private static Request ConvertRequestToRouteRequest(HttpListenerContext ctx) {
@@ -149,7 +149,7 @@ namespace CreamRoll.Routing {
                 dest.Cookies.Add(new Cookie(cookie.Name, cookie.Value));
             }
 
-            source.Contents(dest.OutputStream);
+            source.WriteContent(dest.OutputStream);
             dest.OutputStream.Close();
         }
 

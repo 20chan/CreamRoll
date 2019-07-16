@@ -12,26 +12,52 @@ namespace CreamRoll.Routing {
         public List<CreamCookie> Cookies = new List<CreamCookie>();
         public Action<Stream> Contents;
 
+        public virtual void WriteContent(Stream body) {
+            Contents(body);
+        }
+
+        public Response() {
+            Contents = null;
+        }
+
         public Response(Action<Stream> contents) {
             Contents = contents;
         }
+    }
 
-        public Response(string contents, string contentType = null, Encoding encoding = null, StatusCode status = StatusCode.Ok) {
-            encoding = encoding ?? Encoding.UTF8;
-            contentType = contentType ?? "text/plain";
-            contentType = contentType.Contains("charset")
-                ? contentType
-                : $"{contentType}; charset={encoding.WebName}";
+    public class TextResponse : Response {
+        public string ContentText;
+        public Encoding Encoding;
 
-            Headers.ContentType = contentType;
-            Status = status;
-
-            if (contents != null) {
-                Contents = stream => {
-                    var data = encoding.GetBytes(contents);
-                    stream.Write(data, 0, data.Length);
-                };
+        private string _contentType;
+        public string ContentType {
+            get => _contentType;
+            set {
+                _contentType = value ?? "text/plain";
+                _contentType = _contentType.Contains("charset")
+                    ? _contentType
+                    : $"{_contentType}; charset={Encoding.WebName}";
+                Headers.ContentType = _contentType;
             }
+        }
+
+        public TextResponse(string contents, string contentType = null, Encoding encoding = null, StatusCode status = StatusCode.Ok) {
+            Encoding = encoding ?? Encoding.UTF8;
+            ContentType = contentType;
+            Status = status;
+            ContentText = contents;
+        }
+
+        public override void WriteContent(Stream stream) {
+            var data = Encoding.GetBytes(ContentText);
+            stream.Write(data, 0, data.Length);
+        }
+    }
+
+    public class HtmlResponse : TextResponse {
+        public HtmlResponse(string contents, string contentType = "text/html", Encoding encoding = null,
+            StatusCode status = StatusCode.Ok)
+            : base(contents, contentType, encoding, status) {
         }
     }
 }
