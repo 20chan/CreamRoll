@@ -60,4 +60,11 @@ namespace CreamRoll.Routing {
             : base(contents, contentType, encoding, status) {
         }
     }
+
+    public class JsonResponse : TextResponse {
+        public JsonResponse(string contents, string contentType = "application/json", Encoding encoding = null,
+            StatusCode status = StatusCode.Ok)
+            : base(contents, contentType, encoding, status) {
+        }
+    }
 }
