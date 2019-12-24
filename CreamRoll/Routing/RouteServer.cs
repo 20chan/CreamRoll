@@ -19,7 +19,7 @@ namespace CreamRoll.Routing {
         public RouteServer(T instance,
             string host = "localhost",
             int port = 4000,
-            AuthenticationSchemes auth = AuthenticationSchemes.None,
+            AuthenticationSchemes auth = AuthenticationSchemes.Anonymous,
             BindingFlags methodFlag = BindingFlags.Public | BindingFlags.Instance
         ) : base(host, port, auth) {
             Instance = instance;
