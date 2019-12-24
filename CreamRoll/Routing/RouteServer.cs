@@ -25,25 +25,29 @@ namespace CreamRoll.Routing {
             Instance = instance;
             routes = new List<Route>();
 
-            var methods = typeof(T).GetMethods(methodFlag);
+            AppendRoutes<T>(instance, methodFlag);
+        }
+
+        public void AppendRoutes<TClass>(TClass instance, BindingFlags methodFlag = BindingFlags.Public | BindingFlags.Instance) {
+            var methods = typeof(TClass).GetMethods(methodFlag);
             foreach (var method in methods) {
                 foreach (var route in method.GetCustomAttributes<RouteAttribute>(inherit: true)) {
-                    AddRoute(new Route(route.Method, route.Path, CreateRouteDelFromMethod(route, method)));
+                    AddRoute(new Route(route.Method, route.Path, CreateRouteDelFromMethod(route, method, instance)));
                 }
             }
         }
 
-        private AsyncRouteDel CreateRouteDelFromMethod(RouteAttribute route, MethodInfo method) {
+        private AsyncRouteDel CreateRouteDelFromMethod<TClass>(RouteAttribute route, MethodInfo method, TClass instance) {
             var returnType = method.ReturnType;
             var parameterInfos = method.GetParameters();
             var isParamsEmpty = parameterInfos.Length == 0;
 
             if (returnType == typeof(Response)) {
-                return req => Task.FromResult(method.Invoke<Response>(Instance, req));
+                return req => Task.FromResult(method.Invoke<Response>(instance, req));
             }
 
             if (returnType == typeof(Task<Response>)) {
-                return async req => await method.Invoke<Task<Response>>(Instance, req);
+                return async req => await method.Invoke<Task<Response>>(instance, req);
             }
 
             throw new RouteMethodTypeMismatchException("Return type of route method must be Task<Response> or Response.");
