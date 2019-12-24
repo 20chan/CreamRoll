@@ -112,7 +112,7 @@ namespace CreamRoll.Routing {
 
         protected bool IsRoutePathMatch(Route route, Request request, ref ParameterQuery query) {
             var path = string.Join("/", request.Uri.Segments.Select(s => s.Replace("/", "")));
-            return route.Path.TryMatch(path, ref query);
+            return route.Path.TryMatch(path, request.Uri.Query, ref query);
         }
 
         protected virtual Response MissingRoute(Request req) {
