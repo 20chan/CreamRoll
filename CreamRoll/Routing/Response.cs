@@ -12,6 +12,15 @@ namespace CreamRoll.Routing {
         public List<CreamCookie> Cookies = new List<CreamCookie>();
         public Action<Stream> Contents;
 
+        protected string _contentType;
+        public virtual string ContentType {
+            get => _contentType;
+            set {
+                _contentType = value ?? "text/plain";
+                Headers.ContentType = _contentType;
+            }
+        }
+
         public virtual void WriteContent(Stream body) {
             Contents(body);
         }
@@ -29,8 +38,7 @@ namespace CreamRoll.Routing {
         public string ContentText;
         public Encoding Encoding;
 
-        private string _contentType;
-        public string ContentType {
+        public override string ContentType {
             get => _contentType;
             set {
                 _contentType = value ?? "text/plain";
@@ -141,6 +149,9 @@ namespace CreamRoll.Routing {
 
         public FileResponse(string path) {
             FilePath = path;
+            if (_mimeTypeMappings.TryGetValue(Path.GetExtension(path), out var type)) {
+                ContentType = type;
+            }
         }
 
         public override void WriteContent(Stream stream) {
