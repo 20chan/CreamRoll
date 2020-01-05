@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>CreamRoll</PackageId>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
         <Authors>20chan</Authors>
         <Description>Lightweight, easy framework for building HTTP based async server on .NET Standard</Description>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
