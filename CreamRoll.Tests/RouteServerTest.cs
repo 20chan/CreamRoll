@@ -6,12 +6,13 @@ using Xunit;
 
 namespace CreamRoll.Tests {
     public class RouteServerTest : IDisposable {
-        int port = 4041;
+        int port = 4141;
         TestServer server;
-        RouteServer<TestServer> runner;
+        RouteServer runner;
         public RouteServerTest() {
             server = new TestServer();
-            runner = new RouteServer<TestServer>(server, port: port);
+            runner = new RouteServer(port: port);
+            runner.AppendRoutes(server);
             runner.HandleErrorToConsole = false;
             runner.StartAsync();
         }
