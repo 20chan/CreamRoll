@@ -9,31 +9,34 @@ using CreamRoll.Helpers;
 using CreamRoll.Queries;
 
 namespace CreamRoll.Routing {
-    public class RouteServer<T> : Server {
+    public class RouteServer : Server {
         public delegate Task<Response> AsyncRouteDel(Request request);
-
-        public T Instance;
 
         protected List<Route> routes;
 
-        public RouteServer(T instance,
-            string host = "localhost",
+        public RouteServer(string host = "localhost",
             int port = 4000,
-            AuthenticationSchemes auth = AuthenticationSchemes.Anonymous,
-            BindingFlags methodFlag = BindingFlags.Public | BindingFlags.Instance
+            AuthenticationSchemes auth = AuthenticationSchemes.Anonymous
         ) : base(host, port, auth) {
-            Instance = instance;
             routes = new List<Route>();
-
-            AppendRoutes<T>(instance, methodFlag);
         }
 
-        public void AppendRoutes<TClass>(TClass instance, BindingFlags methodFlag = BindingFlags.Public | BindingFlags.Instance) {
+        public void AppendRoutes<TClass>(TClass instance, string baseUrl = null, BindingFlags methodFlag = BindingFlags.Public | BindingFlags.Instance) {
             var methods = typeof(TClass).GetMethods(methodFlag);
             foreach (var method in methods) {
                 foreach (var route in method.GetCustomAttributes<RouteAttribute>(inherit: true)) {
-                    AddRoute(new Route(route.Method, route.Path, CreateRouteDelFromMethod(route, method, instance)));
+                    var path = Combine(baseUrl, route.Path);
+                    AddRoute(new Route(route.Method, path, CreateRouteDelFromMethod(route, method, instance)));
                 }
+            }
+            
+            string Combine(string uri1, string uri2) {
+                if (string.IsNullOrEmpty(uri1)) {
+                    return uri2;
+                }
+                uri1 = uri1.TrimEnd('/');
+                uri2 = uri2.TrimStart('/');
+                return string.Format("{0}/{1}", uri1, uri2);
             }
         }
 
