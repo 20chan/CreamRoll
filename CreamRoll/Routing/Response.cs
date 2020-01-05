@@ -34,6 +34,16 @@ namespace CreamRoll.Routing {
         }
     }
 
+    public class RedirectResponse : Response {
+        public RedirectResponse(StatusCode status, string location) {
+            Status = status;
+            Headers.Add("Location", location);
+        }
+
+        public override void WriteContent(Stream body) {
+        }
+    }
+
     public class TextResponse : Response {
         public string ContentText;
         public Encoding Encoding;
