@@ -5,8 +5,6 @@
 [![Version](https://img.shields.io/nuget/v/CreamRoll.svg)](https://www.nuget.org/packages/CreamRoll/)
 [![Nuget](https://img.shields.io/nuget/dt/CreamRoll.svg)](https://www.nuget.org/packages/CreamRoll/)
 
-> WIP
-
 ![logo](logo.png)
 
 CreamRoll is lightweight, easy framework for building HTTP based async service on .NET Standard.
