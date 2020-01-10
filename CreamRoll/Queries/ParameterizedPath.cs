@@ -103,11 +103,11 @@ namespace CreamRoll.Queries {
                 var inner = part.Trim('{', '}');
                 var split = inner.Split(':');
                 name = split[0];
-                if (split.Length == 0) {
+                if (split.Length == 1) {
                     name = split[0];
                     isInteger = false;
                 }
-                if (split.Length == 1) {
+                if (split.Length == 2) {
                     isInteger = true;
                 }
             }
