@@ -97,13 +97,23 @@ namespace CreamRoll.Queries {
 
         private class NamedPathSegment : IPathSegment {
             private readonly string name;
+            private readonly bool isInteger;
 
             public NamedPathSegment(string part) {
-                name = part.Trim('{', '}');
+                var inner = part.Trim('{', '}');
+                var split = inner.Split(':');
+                name = split[0];
+                if (split.Length == 0) {
+                    name = split[0];
+                    isInteger = false;
+                }
+                if (split.Length == 1) {
+                    isInteger = true;
+                }
             }
 
             public bool DoesMatch(string part) {
-                return true;
+                return isInteger && int.TryParse(part, out _);
             }
 
             public void Match(string part, ref ParameterQuery query) {
