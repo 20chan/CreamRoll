@@ -113,7 +113,10 @@ namespace CreamRoll.Queries {
             }
 
             public bool DoesMatch(string part) {
-                return isInteger && int.TryParse(part, out _);
+                if (isInteger) {
+                    return int.TryParse(part, out _);
+                }
+                return true;
             }
 
             public void Match(string part, ref ParameterQuery query) {
