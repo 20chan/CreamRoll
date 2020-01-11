@@ -21,23 +21,14 @@ namespace CreamRoll.Routing {
             routes = new List<Route>();
         }
 
-        public void AppendRoutes<TClass>(TClass instance, string baseUrl = null, BindingFlags methodFlag = BindingFlags.Public | BindingFlags.Instance) {
+        public void AppendRoutes<TClass>(TClass instance, string baseUri = null, BindingFlags methodFlag = BindingFlags.Public | BindingFlags.Instance) {
             var methods = typeof(TClass).GetMethods(methodFlag);
             foreach (var method in methods) {
                 foreach (var route in method.GetCustomAttributes<RouteAttribute>(inherit: true)) {
-                    var path = Combine(baseUrl, route.Path);
-                    AddRoute(new Route(route.Method, path, CreateRouteDelFromMethod(route, method, instance)));
+                    AddRoute(new Route(route.Method, baseUri, route.Path, CreateRouteDelFromMethod(route, method, instance)));
                 }
             }
             
-            string Combine(string uri1, string uri2) {
-                if (string.IsNullOrEmpty(uri1)) {
-                    return uri2;
-                }
-                uri1 = uri1.TrimEnd('/');
-                uri2 = uri2.TrimStart('/');
-                return string.Format("{0}/{1}", uri1, uri2);
-            }
         }
 
         private AsyncRouteDel CreateRouteDelFromMethod<TClass>(RouteAttribute route, MethodInfo method, TClass instance) {
@@ -96,6 +87,7 @@ namespace CreamRoll.Routing {
 
             foreach (var route in routes) {
                 if (IsRouteMatch(route, request, ref query)) {
+                    request.SetBaseUri(route.BaseUri);
                     request.Query = query;
                     response = await route.Action(request);
                     break;
@@ -162,15 +154,37 @@ namespace CreamRoll.Routing {
 
         protected class Route {
             public HttpMethod Method;
-            public string RawPath;
+            public string FullPath;
+            public string BaseUri;
+            public string PathWithoutBaseUri;
             public ParameterizedPath Path;
             public AsyncRouteDel Action;
 
             public Route(HttpMethod method, string path, AsyncRouteDel action) {
                 Method = method;
-                RawPath = path;
-                Path = new ParameterizedPath(path);
+                BaseUri = null;
+                PathWithoutBaseUri = path;
+                FullPath = path;
+                Path = new ParameterizedPath(FullPath);
                 Action = action;
+            }
+
+            public Route(HttpMethod method, string baseUri, string path, AsyncRouteDel action) {
+                Method = method;
+                BaseUri = baseUri;
+                PathWithoutBaseUri = path;
+                FullPath = Combine(baseUri, path);
+                Path = new ParameterizedPath(FullPath);
+                Action = action;
+            }
+
+            private static string Combine(string uri1, string uri2) {
+                if (string.IsNullOrEmpty(uri1)) {
+                    return uri2;
+                }
+                uri1 = uri1.TrimEnd('/');
+                uri2 = uri2.TrimStart('/');
+                return string.Format("{0}/{1}", uri1, uri2);
             }
         }
     }
