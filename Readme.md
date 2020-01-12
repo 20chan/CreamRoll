@@ -58,7 +58,7 @@ public async Task<Response> GetUserInfoAsync(Request req) {
 	return new Response(user.Info);
 }
 
-[Get("/api/users/{id:int}?{from}&{sort}=true)]
+[Get("/api/users/{id:int}?{from}&{sort}=true")]
 public async Task<Response> GetUserList(Request req) {
     throw new NotImplementException();
 }
