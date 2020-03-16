@@ -28,13 +28,15 @@ namespace CreamRoll.Routing {
                     AddRoute(new Route(route.Method, baseUri, route.Path, CreateRouteDelFromMethod(route, method, instance)));
                 }
             }
-            
         }
 
         private AsyncRouteDel CreateRouteDelFromMethod<TClass>(RouteAttribute route, MethodInfo method, TClass instance) {
             var returnType = method.ReturnType;
-            var parameterInfos = method.GetParameters();
-            var isParamsEmpty = parameterInfos.Length == 0;
+            var parameters = method.GetParameters();
+
+            if (parameters.Length != 1 || parameters[0].ParameterType != typeof(Request)) {
+                throw new RouteMethodTypeMismatchException("Parameters of route method must be [Request].");
+            }
 
             if (returnType == typeof(Response)) {
                 return req => Task.FromResult(method.Invoke<Response>(instance, req));
